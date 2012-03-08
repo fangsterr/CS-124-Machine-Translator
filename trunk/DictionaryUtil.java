@@ -105,16 +105,18 @@ class DictionaryUtil {
 				while (st.hasMoreTokens()) {
 					String token = st.nextToken();
 					String fWord = filterWord(token);
-					String prefix, suffix;
-					prefix = suffix = "";
+					
+					/* Punctuation parsing */
+					String prePunc, postPunc;
+					prePunc = postPunc = "";
 					if (fWord.length() != token.length()) {
 						// if filtering occurred
-						prefix = getPrePunctuation(token);
-						suffix = getPostPunctuation(token);
-						System.out.println(prefix + "||" + suffix);
+						prePunc = getPrePunctuation(token);
+						postPunc = getPostPunctuation(token);
 						if (fWord.isEmpty()) continue;
 					}
 
+					/* Translating into English */
 					String eWord = dict.get(fWord);
 					if (eWord == null) {
 						if (dict.get(fWord.toLowerCase()) != null) {
@@ -125,7 +127,7 @@ class DictionaryUtil {
 							eWord = fWord;
 						}
 					}
-					eSentence += prefix + eWord + suffix + " ";
+					eSentence += prePunc + eWord + postPunc + " ";
 				}
 				eSentence = eSentence.trim();
 				eSentence = Character.toUpperCase(eSentence.charAt(0))
