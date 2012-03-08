@@ -209,6 +209,30 @@ class DictionaryUtil {
 			
 		}
 		
+		// Rule: Adjust time phrases
+		
+		// Rule:
+		
+		// Rule: Switch NOT-modal to modal-NOT (not will -> will not)
+		
+		// Rule: Break up consecutive nouns into pairs and add 'of' after
+		int count = 0;
+		for (int i = 0; i < tagged.size(); i++) {
+			String word = tagged.get(i);
+			if (isNoun(word) && !isProperNoun(word)) {
+				count++;
+			} else {
+				count = 0;
+			}
+			
+			if (count > 2) {
+				tagged.set(i, word+"OF");
+				count = 1;
+			}
+		}
+		
+		
+		// Rule: Switch NOUN-NOUN phrases (team badminton -> badminton team)
 		
 		// Rule: Add articles to all noun phrases
 		if (isNoun(tagged.get(0))) {
@@ -222,14 +246,18 @@ class DictionaryUtil {
 			}
 		}
 		
+		/** Process into actual sentence **/
 		String out = "";
 		for (int i = 0; i < tagged.size(); i++) {
 			String word = tagged.get(i);
-			if (word.length() > 3 &&
-					word.substring(word.length()-3).equals("THE")) {
-				word = "the " + word;
+			String processed = word.substring(0, word.indexOf(TAGGED_DELIM));
+			if (word.contains("THE")) {
+				processed = "the " + processed;
 			}
-			out += word.substring(0, word.indexOf(TAGGED_DELIM)) + " ";
+			if (word.contains("OF")) {
+				processed = "of " + processed;
+			}
+			out += processed + " ";
 		}
 		return out.trim();
 	}
@@ -248,12 +276,15 @@ class DictionaryUtil {
 		String taggedData = taggedWord.substring(index+1);
 		return taggedData.contains("NNP");
 	}
+	
 
 	private static boolean isAdjective(String taggedWord) {
 		int index = taggedWord.indexOf(TAGGED_DELIM);
 		if (index == -1)
 			return false;
-		return (taggedWord.charAt(index + 1) == 'J');
+		String taggedData = taggedWord.substring(index+1);
+		return (taggedWord.charAt(index + 1) == 'J') ||
+		       (taggedData.contains("DT"));
 	}
 
 	public static void main(String[] args) {
