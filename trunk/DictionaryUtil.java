@@ -50,6 +50,8 @@ class DictionaryUtil {
 			
 			String fSentence;
 			while ((fSentence = in.readLine()) != null) {
+				if (fSentence.isEmpty()) continue;
+				
 				String eSentence = "";
 				StringTokenizer st = new StringTokenizer(fSentence);
 				while (st.hasMoreTokens()) {
@@ -65,6 +67,7 @@ class DictionaryUtil {
 					eSentence += eWord + (eos ? "." : "") + " ";
 				}
 				out.write(eSentence.trim());
+				out.newLine();
 			}
 			out.close();
 		} catch (Exception e) {
@@ -75,7 +78,6 @@ class DictionaryUtil {
 	public static void main(String[] args) {
 		Map<String, String> dict = DictionaryUtil
 				.importDictionary("dictionary.txt");
-		
-		
+		DictionaryUtil.translateText(dict, "indo_input.txt", "english.txt");
 	}
 }
