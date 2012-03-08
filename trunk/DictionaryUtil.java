@@ -10,8 +10,7 @@ import java.util.*;
 class DictionaryUtil {
 	/** CONSTANTS **/
 	private static final char TAGGED_DELIM = '_';
-	
-	
+
 	/**
 	 * Imports from a file and returns a Map mapping foreign word Strings to
 	 * English word Strings. Each line in the file should be of the format
@@ -114,7 +113,7 @@ class DictionaryUtil {
 				}
 			}
 		}
-		
+
 		return (eWord == null) ? fWord : eWord;
 	}
 
@@ -191,50 +190,75 @@ class DictionaryUtil {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Given an ArrayList of tagged words (which all should have _ separators),
 	 * outputs a rewritten English sentence.
 	 */
 	public static String rewriteSentence(ArrayList<String> tagged) {
-		// Rule 1: Switch NOUN-ADJ to ADJ-NOUN
+		// Rule: Switch NOUN-ADJ to ADJ-NOUN
+		// (also sets up for Rule 2
 		for (int i = 0; i < tagged.size()-1; i++) {
 			String word1 = tagged.get(i);
 			String word2 = tagged.get(i+1);
 			if (isNoun(word1) && isAdjective(word2)) {
 				System.out.println(word2 + " " + word1);
-				tagged.set(i, word2);
+				tagged.set(i, word2+"THE");
 				tagged.set(i+1, word1);
 			}
 			
 		}
 		
 		
+		// Rule: Add articles to all noun phrases
+		if (isNoun(tagged.get(0))) {
+			tagged.set(0, tagged.get(0)+"THE");
+		}
+		for (int i = 1; i < tagged.size(); i++) {
+			String word = tagged.get(i);
+			String wordPrev = tagged.get(i-1);
+			if (isNoun(word) && !isProperNoun(word) && !isAdjective(wordPrev)) {
+				tagged.set(i, tagged.get(i)+"THE");
+			}
+		}
+		
 		String out = "";
 		for (int i = 0; i < tagged.size(); i++) {
 			String word = tagged.get(i);
+			if (word.length() > 3 &&
+					word.substring(word.length()-3).equals("THE")) {
+				word = "the " + word;
+			}
 			out += word.substring(0, word.indexOf(TAGGED_DELIM)) + " ";
 		}
 		return out.trim();
 	}
-	
+
 	private static boolean isNoun(String taggedWord) {
 		int index = taggedWord.indexOf(TAGGED_DELIM);
-		if (index == -1) return false;
-		return (taggedWord.charAt(index+1) == 'N');
+		if (index == -1)
+			return false;
+		return (taggedWord.charAt(index + 1) == 'N');
 	}
 	
+	private static boolean isProperNoun(String taggedWord) {
+		int index = taggedWord.indexOf(TAGGED_DELIM);
+		if (index == -1)
+			return false;
+		String taggedData = taggedWord.substring(index+1);
+		return taggedData.contains("NNP");
+	}
+
 	private static boolean isAdjective(String taggedWord) {
 		int index = taggedWord.indexOf(TAGGED_DELIM);
-		if (index == -1) return false;
-		return (taggedWord.charAt(index+1) == 'J');
+		if (index == -1)
+			return false;
+		return (taggedWord.charAt(index + 1) == 'J');
 	}
 
 	public static void main(String[] args) {
-//		Map<String, String> dict = DictionaryUtil
-//				.importDictionary("dictionary.txt");
-//		DictionaryUtil.translateRawText(dict, "indo_input.txt",
-//				"english_output.txt");
+		Map<String, String> dict = DictionaryUtil.importDictionary("dictionary.txt");
+		DictionaryUtil.translateRawText(dict, "indo_input.txt", "english_output.txt");
 		DictionaryUtil.updateTaggedText("english_tagged.txt",
 				"final_english.txt");
 	}
