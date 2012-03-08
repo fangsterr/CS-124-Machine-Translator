@@ -14,6 +14,7 @@ itu|that
 diakibatkan|result
 hujan|rain
 deras|hard
+kedalaman|depth
 sungai|river
 membuat|create
 meluap|boil over
@@ -30,7 +31,7 @@ hanyut|float
 terseret|trail
 air|water
 di|in
-Araulen|Araulen [PLACE]
+Araulen|Araulen
 sebelah|next to
 selatan|south
 New South Wales|New South Wales
@@ -40,6 +41,7 @@ itu|it
 mencoba|try
 mengendarai|ride
 mobil|car
+mobilnya|their car
 melintasi|across
 banyak|many
 penggemar|fan
@@ -76,7 +78,7 @@ seharus|should
 punya|have
 keberanian|courage
 untuk|for
-menyampai|communicate
+menyampaikan|convey
 secara|in
 apa|what
 mereka|they
@@ -116,7 +118,8 @@ hidung|nose
 pada|on
 anggota|member
 parlemen|parliament
-meminta|request                        //has NYA at the end of it
+meminta|request
+memintanya|their request
 menceritakan|tell
 kepada|to
 siapapun|anyone
@@ -223,6 +226,7 @@ kematian|death
 terus|continue
 terjadi|occur
 atau|or
+menang|win
 
 # di = in OR at!
 # mempertahanKAN (the KAN is often added to ends of words
