@@ -231,10 +231,10 @@ class DictionaryUtil {
 	}
 
 	public static void main(String[] args) {
-//		Map<String, String> dict = DictionaryUtil
-//				.importDictionary("dictionary.txt");
-//		DictionaryUtil.translateRawText(dict, "indo_input.txt",
-//				"english_output.txt");
+		Map<String, String> dict = DictionaryUtil
+				.importDictionary("dictionary.txt");
+		DictionaryUtil.translateRawText(dict, "indo_input.txt",
+				"english_output.txt");
 		DictionaryUtil.updateTaggedText("english_tagged.txt",
 				"final_english.txt");
 	}
