@@ -8,6 +8,10 @@ import java.util.*;
  * English word.
  */
 class DictionaryUtil {
+	/** CONSTANTS **/
+	private static final char TAGGED_DELIM = '_';
+	
+	
 	/**
 	 * Imports from a file and returns a Map mapping foreign word Strings to
 	 * English word Strings. Each line in the file should be of the format
@@ -78,7 +82,7 @@ class DictionaryUtil {
 			char c = s.charAt(i);
 			if (Character.isDigit(c))
 				return s; // don't filter numbers
-			if (Character.isLetter(c)) {
+			if (Character.isLetter(c) || c == '-') {
 				out += c;
 			}
 		}
@@ -91,26 +95,34 @@ class DictionaryUtil {
 	 * Indonesian word into an English word, given a dictionary.
 	 */
 	private static String translateIndonesian(String fWord,
-											  Map<String, String> dict) {
+			Map<String, String> dict) {
 		String eWord = dict.get(fWord);
 		if (eWord == null) {
 			if (dict.get(fWord.toLowerCase()) != null) {
 				// if foreign word is capitalized for some reason
 				eWord = toTitleCase(dict.get(fWord.toLowerCase()));
-			} else {
-				// if foreign word not found in dictionary
-				eWord = fWord;
+			} else if (fWord.indexOf('-') != -1) {
+				// check to see if the word is repeated e.g. "obat-obat"
+				// repeated words means plural
+				int hyphen = fWord.indexOf('-');
+				if (fWord.substring(0, hyphen).equals(
+						fWord.substring(hyphen + 1))) {
+					eWord = dict.get(fWord.substring(hyphen + 1));
+					if (eWord != null) {
+						eWord += "s";
+					}
+				}
 			}
 		}
 		
-		return eWord;
+		return (eWord == null) ? fWord : eWord;
 	}
 
 	/**
 	 * 
 	 */
-	public static void translateText(Map<String, String> dict, String inFile,
-			String outFile) {
+	public static void translateRawText(Map<String, String> dict,
+			String inFile, String outFile) {
 		try {
 			BufferedReader in = new BufferedReader(new FileReader(inFile));
 			// foreign text
@@ -155,9 +167,75 @@ class DictionaryUtil {
 		}
 	}
 
+	public static void updateTaggedText(String taggedFile, String outFile) {
+		try {
+			BufferedReader in = new BufferedReader(new FileReader(taggedFile));
+			// foreign text
+			BufferedWriter out = new BufferedWriter(new FileWriter(outFile));
+			// english output
+
+			String tagged;
+			while ((tagged = in.readLine()) != null) {
+				if (tagged.isEmpty())
+					continue;
+				StringTokenizer st = new StringTokenizer(tagged);
+				ArrayList<String> taggedWords = new ArrayList<String>();
+				while (st.hasMoreTokens()) {
+					taggedWords.add(st.nextToken());
+				}
+				out.write(toTitleCase(rewriteSentence(taggedWords)));
+				out.newLine();
+			}
+			out.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Given an ArrayList of tagged words (which all should have _ separators),
+	 * outputs a rewritten English sentence.
+	 */
+	public static String rewriteSentence(ArrayList<String> tagged) {
+		// Rule 1: Switch NOUN-ADJ to ADJ-NOUN
+		for (int i = 0; i < tagged.size()-1; i++) {
+			String word1 = tagged.get(i);
+			String word2 = tagged.get(i+1);
+			if (isNoun(word1) && isAdjective(word2)) {
+				System.out.println(word2 + " " + word1);
+				tagged.set(i, word2);
+				tagged.set(i+1, word1);
+			}
+			
+		}
+		
+		
+		String out = "";
+		for (int i = 0; i < tagged.size(); i++) {
+			String word = tagged.get(i);
+			out += word.substring(0, word.indexOf(TAGGED_DELIM)) + " ";
+		}
+		return out.trim();
+	}
+	
+	private static boolean isNoun(String taggedWord) {
+		int index = taggedWord.indexOf(TAGGED_DELIM);
+		if (index == -1) return false;
+		return (taggedWord.charAt(index+1) == 'N');
+	}
+	
+	private static boolean isAdjective(String taggedWord) {
+		int index = taggedWord.indexOf(TAGGED_DELIM);
+		if (index == -1) return false;
+		return (taggedWord.charAt(index+1) == 'J');
+	}
+
 	public static void main(String[] args) {
-		Map<String, String> dict = DictionaryUtil
-				.importDictionary("dictionary.txt");
-		DictionaryUtil.translateText(dict, "indo_input.txt", "english.txt");
+//		Map<String, String> dict = DictionaryUtil
+//				.importDictionary("dictionary.txt");
+//		DictionaryUtil.translateRawText(dict, "indo_input.txt",
+//				"english_output.txt");
+		DictionaryUtil.updateTaggedText("english_tagged.txt",
+				"final_english.txt");
 	}
 }
