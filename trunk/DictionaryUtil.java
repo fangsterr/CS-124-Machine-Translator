@@ -46,22 +46,23 @@ class DictionaryUtil {
 	private static String toTitleCase(String s) {
 		return Character.toUpperCase(s.charAt(0)) + s.substring(1);
 	}
-	
+
 	private static String getPrePunctuation(String s) {
 		for (int i = 0; i < s.length(); i++) {
 			if (Character.isLetter(s.charAt(i))) {
 				return s.substring(0, i);
 			}
 		}
-		
+
 		return "";
 	}
-	
+
 	private static String getPostPunctuation(String s) {
-		for (int i = s.length()-1; i >= 0; i--) {
+		for (int i = s.length() - 1; i >= 0; i--) {
 			if (Character.isLetter(s.charAt(i))) {
-				if (i == s.length()-1) return "";
-				return s.substring(i+1);
+				if (i == s.length() - 1)
+					return "";
+				return s.substring(i + 1);
 			}
 		}
 		return "";
@@ -75,13 +76,34 @@ class DictionaryUtil {
 
 		for (int i = 0; i < s.length(); i++) {
 			char c = s.charAt(i);
-			if (Character.isDigit(c)) return s; // don't filter numbers
+			if (Character.isDigit(c))
+				return s; // don't filter numbers
 			if (Character.isLetter(c)) {
 				out += c;
 			}
 		}
 
 		return out;
+	}
+
+	/**
+	 * The bulk of the translating occurs in this method. Translates an
+	 * Indonesian word into an English word, given a dictionary.
+	 */
+	private static String translateIndonesian(String fWord,
+											  Map<String, String> dict) {
+		String eWord = dict.get(fWord);
+		if (eWord == null) {
+			if (dict.get(fWord.toLowerCase()) != null) {
+				// if foreign word is capitalized for some reason
+				eWord = toTitleCase(dict.get(fWord.toLowerCase()));
+			} else {
+				// if foreign word not found in dictionary
+				eWord = fWord;
+			}
+		}
+		
+		return eWord;
 	}
 
 	/**
@@ -99,13 +121,13 @@ class DictionaryUtil {
 			while ((fSentence = in.readLine()) != null) {
 				if (fSentence.isEmpty())
 					continue;
-				
+
 				String eSentence = "";
 				StringTokenizer st = new StringTokenizer(fSentence);
 				while (st.hasMoreTokens()) {
 					String token = st.nextToken();
 					String fWord = filterWord(token);
-					
+
 					/* Punctuation parsing */
 					String prePunc, postPunc;
 					prePunc = postPunc = "";
@@ -113,20 +135,12 @@ class DictionaryUtil {
 						// if filtering occurred
 						prePunc = getPrePunctuation(token);
 						postPunc = getPostPunctuation(token);
-						if (fWord.isEmpty()) continue;
+						if (fWord.isEmpty())
+							continue;
 					}
 
 					/* Translating into English */
-					String eWord = dict.get(fWord);
-					if (eWord == null) {
-						if (dict.get(fWord.toLowerCase()) != null) {
-							// if foreign word is capitalized for some reason
-							eWord = toTitleCase(dict.get(fWord.toLowerCase()));
-						} else {
-							// if foreign word not found in dictionary
-							eWord = fWord;
-						}
-					}
+					String eWord = translateIndonesian(fWord, dict);
 					eSentence += prePunc + eWord + postPunc + " ";
 				}
 				eSentence = eSentence.trim();
