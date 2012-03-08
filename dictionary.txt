@@ -13,7 +13,7 @@ yang|which
 itu|that
 diakibatkan|result
 hujan|rain
-duras|hard
+deras|hard
 sungai|river
 membuat|create
 meluap|boil over
@@ -69,7 +69,7 @@ pemimpin|leader
 politik|political
 dan|and
 figur|figure
-publik|publik
+publik|public
 seharusnya|should
 harus|should
 seharus|should
@@ -133,7 +133,7 @@ adanya|presence
 penyebaran|deployment
 virus|virus
 penyakit|disease
-menganggu|interfere
+mengganggu|interfere
 upaya|effort
 atlet|athlete
 meraih|reach
@@ -222,6 +222,7 @@ risiko|risk
 kematian|death
 terus|continue
 terjadi|occur
+atau|or
 
 # di = in OR at!
 # mempertahanKAN (the KAN is often added to ends of words
