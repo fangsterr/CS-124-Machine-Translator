@@ -198,23 +198,23 @@ class DictionaryUtil {
 	public static String rewriteSentence(ArrayList<String> tagged) {
 		// Rule: Switch NOUN-ADJ to ADJ-NOUN
 		// (also sets up for Rule 2
-		for (int i = 0; i < tagged.size()-1; i++) {
+		for (int i = 0; i < tagged.size() - 1; i++) {
 			String word1 = tagged.get(i);
-			String word2 = tagged.get(i+1);
+			String word2 = tagged.get(i + 1);
 			if (isNoun(word1) && isAdjective(word2)) {
-				System.out.println(word2 + " " + word1);
-				tagged.set(i, word2+"THE");
-				tagged.set(i+1, word1);
+				// System.out.println(word2 + " " + word1);
+				tagged.set(i, word2 + "THE");
+				tagged.set(i + 1, word1);
 			}
-			
+
 		}
-		
+
 		// Rule: Adjust time phrases
-		
+
 		// Rule:
-		
+
 		// Rule: Switch NOT-modal to modal-NOT (not will -> will not)
-		
+
 		// Rule: Break up consecutive nouns into pairs and add 'of' after
 		int count = 0;
 		for (int i = 0; i < tagged.size(); i++) {
@@ -224,28 +224,43 @@ class DictionaryUtil {
 			} else {
 				count = 0;
 			}
-			
+
 			if (count > 2) {
-				tagged.set(i, word+"OF");
+				tagged.set(i, word + "OF");
 				count = 1;
 			}
 		}
-		
-		
+
 		// Rule: Switch NOUN-NOUN phrases (team badminton -> badminton team)
-		
+		for (int i = 0; i < tagged.size() - 1; i++) {
+			String word1 = tagged.get(i);
+			String word2 = tagged.get(i + 1);
+			if (isNoun(word1) && !isProperNoun(word1) && !word1.contains("OF")
+					&& isNoun(word2) && !isProperNoun(word2)) {
+				// two consecutive nouns (not already separated by 'of')
+				if (word2.contains("OF")) {
+					word2 = word2.substring(0, word2.length() - 2);
+					word1 = word1 + "OF";
+				}
+				tagged.set(i, word2);
+				tagged.set(i + 1, word1);
+				System.out.println(word2 + ", " + word1);
+			}
+		}
+
 		// Rule: Add articles to all noun phrases
 		if (isNoun(tagged.get(0))) {
-			tagged.set(0, tagged.get(0)+"THE");
+			tagged.set(0, tagged.get(0) + "THE");
 		}
 		for (int i = 1; i < tagged.size(); i++) {
 			String word = tagged.get(i);
-			String wordPrev = tagged.get(i-1);
-			if (isNoun(word) && !isProperNoun(word) && !isAdjective(wordPrev)) {
-				tagged.set(i, tagged.get(i)+"THE");
+			String wordPrev = tagged.get(i - 1);
+			if (isNoun(word) && !isProperNoun(word) && !isAdjective(wordPrev)
+					&& !isNoun(wordPrev)) {
+				tagged.set(i, tagged.get(i) + "THE");
 			}
 		}
-		
+
 		/** Process into actual sentence **/
 		String out = "";
 		for (int i = 0; i < tagged.size(); i++) {
@@ -268,28 +283,29 @@ class DictionaryUtil {
 			return false;
 		return (taggedWord.charAt(index + 1) == 'N');
 	}
-	
+
 	private static boolean isProperNoun(String taggedWord) {
 		int index = taggedWord.indexOf(TAGGED_DELIM);
 		if (index == -1)
 			return false;
-		String taggedData = taggedWord.substring(index+1);
+		String taggedData = taggedWord.substring(index + 1);
 		return taggedData.contains("NNP");
 	}
-	
 
 	private static boolean isAdjective(String taggedWord) {
 		int index = taggedWord.indexOf(TAGGED_DELIM);
 		if (index == -1)
 			return false;
-		String taggedData = taggedWord.substring(index+1);
-		return (taggedWord.charAt(index + 1) == 'J') ||
-		       (taggedData.contains("DT"));
+		String taggedData = taggedWord.substring(index + 1);
+		return (taggedWord.charAt(index + 1) == 'J')
+				|| (taggedData.startsWith("DT"));
 	}
 
 	public static void main(String[] args) {
-		Map<String, String> dict = DictionaryUtil.importDictionary("dictionary.txt");
-		DictionaryUtil.translateRawText(dict, "indo_input.txt", "english_output.txt");
+		Map<String, String> dict = DictionaryUtil
+				.importDictionary("dictionary.txt");
+		DictionaryUtil.translateRawText(dict, "indo_input.txt",
+				"english_output.txt");
 		DictionaryUtil.updateTaggedText("english_tagged.txt",
 				"final_english.txt");
 	}
