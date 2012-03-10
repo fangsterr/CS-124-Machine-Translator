@@ -178,7 +178,7 @@ visa|visa
 agar|so
 sedikit|slightly
 dipercepat|be accelerated
-walau|through
+walau|though
 menekankan|emphasize
 jangan|do not
 sampai|to
