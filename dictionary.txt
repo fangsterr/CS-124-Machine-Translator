@@ -227,6 +227,8 @@ terus|continue
 terjadi|occur
 atau|or
 menang|win
+mempertahankan|maintain
+mengungkapkan|reveal
 
 # di = in OR at!
 # mempertahanKAN (the KAN is often added to ends of words
