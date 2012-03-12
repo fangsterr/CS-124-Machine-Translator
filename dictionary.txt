@@ -70,6 +70,7 @@ Barcelona|Barcelona
 pemimpin|leader
 politik|political
 dan|and
+para| 
 figur|figure
 publik|public
 seharusnya|should
@@ -229,6 +230,7 @@ atau|or
 menang|win
 mempertahankan|maintain
 mengungkapkan|reveal
+
 
 # di = in OR at!
 # mempertahanKAN (the KAN is often added to ends of words

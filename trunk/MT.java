@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 
 /**
- * Class: DictionaryUtil
+ * Class: MT
  * 
  * This class is a utility to import a dictionary mapping a foreign word to an
  * English word.
