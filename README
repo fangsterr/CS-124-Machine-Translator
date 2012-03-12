@@ -1,0 +1,147 @@
+CS124 PA7 Machine Translation
+Andy Fang
+Charlton Soesanto
+
+--
+
+We elected to translate the national language of Indonesia, “Bahasa Indonesia,” though we will refer to it as “Indonesian” from now on. Although there are other dialects of the Indonesian language, we will focus on the main one (such as Mandarin in China).
+
+Indonesian most of the time has a basic SVO word order which is very similar to English; however, though basic Indonesian word order matches up English, you can scramble up the sentence structure and it will retain the same underlying meaning. In that regard, it is like Latin--except Indonesian doesn't have any cases, so it depends more on the context.
+
+Furthermore, Indonesian does not have articles, words do not have a plural form (they are repeated multiple times to indicate plurality), verbs do not have conjugations or tenses (instead, they words like “ago” and “already” and “will").
+
+We selected Indonesian because it is a language that Charlton grew up with, learned colloquially, but never really studied formally (like Charlton and Andy did with Latin in high school). By looking at a rule-based translation, it is both an exercise in formalizing a language learned colloquially and having one with a completely English alphabet.
+
+
+-----RULES WE CREATED-----
+
+DICTIONARY STEP:
+1) We applied one rule in the dictionary step.
+
+Since Indonesian words do not have a plural form but use repetition to indicate plurality, words like "obat" (drug) can be made into the plural form with the word "obat-obat" (drugs). However, some Indonesian words such as "orang" (person) can refer to individuals OR groups, so in some cases it is still ambiguous.
+
+REWRITING-REORDERING RULES:
+1) The Indonesian language has adjectives following the noun they describe. For example, the phrase "obat-obat terlarang" means "illegal drugs." However, if the adjective describes a noun phrase, we had to check or the whole noun phrase before simply moving the adjective before the noun.
+
+2) Indonesian nouns don't have articles such as "a" or "the"; thus, our unigram dictionary translation was somewhat faithful but not fluent at all. But searching for noun clusters and entering "the" in front of the clusters, our translation was made much more fluent.
+
+3) Not only do adjectives needed to be reordered, but adjectival nouns (listed as nouns with the Stanford POS tagger) also need to be reordered. An example of this is "penggemar bulutangkis," where "penggemar" means "fan" and "bulutangkis" means "badminton." We had the choice to either put "of" between the words or switch the word order; and in this case we switched the word order since we thought the second word acted like more like a descriptor.
+
+4) We decided, given a phrase with more than 3 nouns in it, to pair nouns together and put "of" between them. Even with Rule 3, there were situations in which a series of nouns made it difficult to decide which noun described which other noun. The most egregious case of this was with the following phrase "Dokter anggota tim kesehatan asosiasi Olimpiade Inggris,” where "Dokter angora tim kesehatan asosiasi" are all nouns. 
+
+5) Our rule was that given a word that ended with "nya," if a noun didn't immediately come after it, then we looked for the first noun beforehand and used that as the reference. To express possession, Indonesian attaches the word "nya" to the ends of nouns. The  's " is attached to the end of the possessor, the "nya" in Indonesian is attached to that which is possessed. For example, "bukunya Charlton" and "Charlton's book" are equivalent. One suggestion to fix this is to translate "nya" as "of"; however, this does not necessarily make sense in all cases. In the following phrase, "Orang itu mencoba mengendarai mobilnya melintasi banjir", "mobilnya" indicates that the car ("mobil") is possessed by something or someone. However, the possessor is "Orang", at the beginning of the sentence, even though "banjir" appears after "mobil" and is closer and follows the pattern of being AFTER the item possessed.
+
+6) To make a more fluent translation, if we see the word "tahun," "bulan," or "hari" followed by a year, month, or day of the week (respectively), we remove the word "year," "month," or "day" from the translation. To tell time, Indonesians say "tahun 2000" instead of just "2000"--they also say "bulan Juni" instead of "June".
+
+7) Whenever we see the POS tagger have "not" right before a modal (such as will, can, etc.), we switch the order of the words (to have “can not” and “will not” as opposed to “not can” and “not will”). We noticed that translating the verbs that there was an issue with negations. "not" + MODAL always translated in correctly.
+
+8) We also noticed that numbers in Indonesian are represented differently than in English; commas in English become periods in Indonesian while periods in English become commas in Indonesian. For instance, the decimal number 3.14 in English would be written as 3,14 in Indonesian. Likewise, the number 1,000 in English would be 1.000 in Indonesian. So, we wrote a rule that switches “.” to “,” and “.” to “,” in words tagged as numbers.
+
+According to Professor Jurafsky, we could choose 10 sentences from a variety of articles so that our sentences could include a wide variety of contacts such as speakers, government policy, natural disasters, and public events.
+
+Below are the Indonesian sentences, along with the Google translation and a translation from a native Indonesian speaker and English speaker.
+
+The order is as followings:
+INDO: Original Indonesian sentence taken from http://www.bbc.co.uk/indonesia/
+INTERMEDIATE_UNIGRAM_DICTIONARY_OUTPUT: 
+OUR_MT_OUTPUT: Resulting translation from our machine translator.
+GOOG: Google-translated version of the sentence
+HUM: Human-Translated Sentence form fluent Indonesian and English Speaker.
+
+----INDONESIAN TEXT-----
+
+Banjir yang menghantam kota itu diakibatkan hujan deras yang membuat sungai Murrumbidge meluap dan diprediksi kedalaman sungai akan mencapai 10,9 meter di puncak banjir.
+Korban pertama hanyut terseret air di Araulen, sebelah selatan New South Wales ketika orang itu mencoba mengendarai mobilnya melintasi banjir.
+Banyak penggemar bulutangkis bahkan tak yakin Indonesia masih akan mampu mempertahankan tradisi selalu meraih emas di Olimpiade yang terjaga sejak olahraga ini masuk ke Olimpiade tahun 1992 di Barcelona.
+"Pemimpin politik dan figur publik seharusnya punya keberanian untuk menyampaikan secara publik apa yang mereka akui secara pribadi, yaitu sejumlah bukti menunjukan bahwa stategi yang represif tidak bisa mengatasi masalah obat-obat terlarang dan perang melawan obat-obat (terlarang) belum dan tidak akan bisa menang," laporan tersebut mengatakan.
+Dokter Balikmi kemudian mengungkapkan bahwa dia telah melakukan operasi hidung pada anggota parlemen itu yang telah memintanya untuk tidak menceritakan kepada siapapun tentang operasi itu.
+Dokter anggota tim kesehatan asosiasi Olimpiade Inggris, BOA, tersebut khawatir dengan adanya penyebaran virus penyakit yang akan mengganggu upaya atlet Inggris untuk meraih medali.
+Kepala bidang kesehatan BOA Dr. Ian McCurdie meyakini perbedaan antara sukses dan gagal dalam perebutan medali bisa jadi terletak pada kesehatan pribadi atlet.
+Tetapi berdasar penyelidikan yang dilakukan sebuah tim bentukan pemerintah menunjukkan sempat ada korespondensi email dimana ia menulis ke Home Office, departemen yang mengurus persoalan visa ini, agar sedikit dipercepat, walau ia menekankan jangan sampai ada perlakuan istimewa.
+Pemerintah Singapura mewajibkan para majikan di negeri itu memberi minimal satu hari libur kepada pekerja rumah tangga mereka mulai tahun depan.
+Karena belum ada aturan tegas tertulis melarang majikan menyuruh PRT menjemur pakaian atau membersihkan jendela dari luar di ketinggian lantai apartemen, menurut Tukinah risiko kematian akan terus terjadi.
+
+--INTERMEDIATE, DICTIONARY ONLY OUTPUT--
+Flood which hit city it result rain hard which create river Murrumbidge boil over and predicted depth river will achieve 10,9 meter in peak flood.
+Victim first float trail water in Araulen, next to south New South Wales when person it try ride their car across flood.
+Many fan badminton even no sure Indonesia still will capable maintain tradition always reach gold in Olympic which awake since sport this entry to Olympic year 1992 in Barcelona.
+"Leader political and figure public should have courage for convey in public what which they admit in personal, that is a number of evidence show that strategy which repressive not can overcome problem medicines forbidden and war against medicines (forbidden) not yet and not will can win," report the say.
+Dokter Balikmi then reveal that she already do operation nose on member parliament it which already their request for not tell to anyone about operation it.
+Dokter member team health association Olympic English, BOA, the concerned with presence deployment virus disease which will interfere effort athlete English for reach medal.
+Head field health BOA Dr. Ian McCurdie believes difference between success and fail in seizure medal can so situated on health personal athlete.
+BOA chief health Dr. Ian McCurdie believe the difference between success and failure in the race for medals could be located on private health of athletes.
+But by investigation which do a team formation government show had there is correspondence email where he write to Home Office, department which care issue visa this, so slightly be accelerated, though he emphasize do not to there is treatment preferential.
+Government Singapore require  employer in country it give minimal one day holiday to worker home ladder they start year front.
+Because not yet there is rule firm written ban employer have PRT season clothing or clean up window of outer in height floor apartment, by Tukinah risk death will continue occur.
+
+
+---OUR MT OUTPUT---
+The Flood which hit the city it result the rain hard which create the Murrumbidge boil of river over and predicted the river depth will achieve 10.9 the meter in peak flood .
+The first float trail of Victim water in Araulen , next to south New South Wales when the person it try ride their the car across the flood .
+Many badminton fan even no sure Indonesia still will capable maintain the tradition always reach the gold in Olympic which awake since the this entry sport to Olympic 1992 in Barcelona .
+`` the political Leader and figure public should have the courage for convey in public what which they admit in personal , that is a number of the evidence show that the strategy which repressive can not overcome the medicines problem forbidden and the war against the medicines -LRB- forbidden -RRB- not yet and will can not win , '' report the say .
+The Dokter Balikmi then reveal that she already do the nose operation on the parliament member it which already their the request for not tell to the anyone about the operation it .
+The Dokter team health of member association Olympic English , BOA , the concerned with the deployment virus of presence disease which will interfere the athlete effort English for the medal reach .
+The Head health field BOA Dr. Ian McCurdie believes the difference between the success and fail in the medal seizure can so situated on the personal athlete health .
+The chief health of BOA Dr. Ian McCurdie believe the difference between the success and the failure in the race for the medals could be located on private health of the athletes .
+But by the investigation which do a formation government of team show had there is the email correspondence where he write to Home Office , the department which care the issue the this visa , so slightly be accelerated , though he emphasize do not to there is the preferential treatment .
+The Government Singapore require the employer in the country it give minimal one the holiday day to the home ladder of worker they start the front year .
+Because not yet there is the firm rule written the employer ban have the season clothing of PRT or clean up the window of outer in the floor apartment of height , by the risk death of Tukinah will continue occur .
+
+
+-----GOOGLE TRANSLATION-----
+
+Floods that hit the city's heavy rains caused rivers to overflow and Murrumbidge predicted the river would reach a depth of 10.9 meters at the peak of the flood.
+The first victim drifting in the water dragged Araulen, south of New South Wales when he tried to drive his car across the flood.
+Many badminton enthusiasts even no sure Indonesia will still be able to maintain the tradition has always won gold at the Olympics since the sport was maintained into the 1992 Olympics in Barcelona.
+"Political leaders and public figures should have the courage to express publicly what they acknowledge privately, that some evidence indicates that the repressive strategy can not overcome the problem illicit drugs, and the war on drugs (illicit) has not and will not be win, "the report said.
+Mr Balkimi's doctor later revealed that he had carried out a rhinoplasty on the MP who had asked him not to tell anyone about the operation.
+Physician member of the British Olympic Association medical team, BOA, is concerned with the spread of virus diseases that would interfere with efforts to British athlete to win medals.
+
+BOA chief health Dr. Ian McCurdie believe the difference between success and failure in the race for medals could be located on private health of athletes.
+But the investigation conducted by a team formed by the government showed there was email correspondence in which he wrote to the Home Office, the department is taking care of visa issues, so little accelerated, although he stressed not to get preferential treatment.
+The Singapore government requires employers in the country that gave at least one day off for domestic workers from next year.
+Because there are no written rules expressly forbid employer asked PRT hanging clothes or clean the windows from the outside at the height of the floor apartment, according to the risk of death Tukinah will continue to happen.
+
+
+--------
+ERROR ANALYSIS
+We failed to detect plural noun forms, except for the cases explicitly drawn out by word duplication. In Indonesian, plural forms are often detected by the context of the noun alone. If we had a larger bicorpus, we could have run machine learning algorithms to statistically determine whether a noun, given its context, is more likely to be singular or plural.
+
+Related to the error above, we could not properly detect the right verb forms to use within a sentence. If we put in additional work to detect the proper noun forms, we could use them to translate the correct verb phrases (e.g. my friend eats vs. my friends eat). However, to detect the subject in the case of a passive verb, we could’ve also used machine learning to statistically determine whether the subject was more likely to be with the verb in an active or passive context.
+
+Our algorithm for detecting noun phrases is still relatively rudimentary; there are instances where “the” either appears in the wrong places or is incorrectly absent. Some of these errors can be attributed to the tagger not appropriately tagging adjectives/nouns, but our detection of noun phrases could have also been improved in the cases where multiple noun phrases appeared consecutively if we used phrase-based translation methods to clarify the meaning behind consecutive noun words. Improving noun phrase detection also would have improved our rule that added articles in front of noun phrases.
+-------
+COMPARATIVE ANALYSIS
+Our translation has a lot of "it"s in it ("hit the city it result," "member it which," etc.). Though the Indonesian word "itu" does mean "it," "itu" is also used to emphasize certain words in ways that repeating a pronoun in English wouldn't make sense. The Google translate can pick up the difference between uses of “itu,” while our translation does not.
+
+Google translate handles nouns better--it can detect if they are singular or plural, and can put the proper article in front.
+
+The sentence beginning with "Many badminton fans/enthusiasts" showcases weaknesses in both of the translation methods: Since Indonesian lacks the word "to be", it is difficult to draw the relationship between the subject and adjectives. 
+
+Phrases within the Google translation are more fluid; however, there is still difficulty in looking at the entire sentence as a unit and making sure the relationship between subject and predicate make sense. For example, for the first sentence about the flood, our translation does better than the Google translation in that Google translation gets the causality of the nouns wrong (it assumes the floods hit the rains) while in fact the heavy rain caused the flood that hit the city.
+
+Overall, the Google translation is much more fluent and faithful, and the main shortcoming of the Google translation was from sentences with varied word order and determining the relationships of multiple nouns with a single verb.
+
+
+-----HUMAN TRANSLATION-----
+
+The flood that hit the city was caused by heavy rain making Murrumbidge river overflow and is predicted that the river will reach 10.9 meter deep at its worst.
+
+The first casualty was swept by the strong water current at Aaulen, south of New South Wales when the person tried to drive thru the flood zone.
+
+Many badminton fans are not convinced that Indonesia will still be able to maintain its tradition to always win gold at the Olympics, which has happened ever since this sport entered the Olympics in 1992 in Barcelona.  
+
+"A political leader and a public figure should have the guts to express publicly what they admit in private, as some evidence has shown that a repressive strategy will not succeed in combatting prohibited drugs and that the war against drugs (prohibited), has not and will ever be won."  as the report states.
+
+Doctor Balikmi stated that he had already performed a nose operation to the parliament member who had requested that the surgery should not be leaked to anyone.
+
+The health team physician of the British Olympics Association, BOA, is concerned that the presence of the virus disease outbreak will hinder the effort of the British athletes to win the medals.
+
+Head of the health BOA Dr. Ian Mccurdie is convinced that the difference between success and failure in acquiring medals lies in the health of the individual athlete.  
+
+But based on the investigation done by a  team formed by government, it show that there is an e-mail correspondence where he wrote to Home Office (the department that handle this visa) to expedite the process, even though he stressed to make sure there is no special treatment required.
+
+The Singaporean government has advised employers in that country to give their housekeepers at least one day holiday starting next year.
+
+Because there is no written rule prohibiting employers for allowing PRT hang clothes or to clean windows outside from a tall apartment building, according Tukinah the risk for death will always be there.
